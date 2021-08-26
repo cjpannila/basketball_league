@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Game, TeamScore, Team
+from .models import Game, TeamScore, Team, Player, PlayerScore
 from django.http import JsonResponse, HttpResponse
 import json
 
@@ -34,6 +34,26 @@ def get_winner_team(request):
     winner_team = Team.objects.get(id=final_game.winner_team_id)
     response_data = {
         'champion_team': winner_team.name
+    }
+    return JsonResponse(response_data, safe=False)
+
+
+def get_player(request, player_id):
+    player = Player.objects.get(id=player_id)
+    player_scores = PlayerScore.objects.filter(player__exact=player_id)
+    num_of_games = 0
+    sum_score = 0
+    for player_score in player_scores:
+        if player_score.score != 0:
+            num_of_games += 1
+            sum_score += player_score.score
+
+    response_data = {
+        'name': player.name,
+        'team': player.team.name,
+        'height': player.height,
+        'num_of_games': num_of_games,
+        'average_score': sum_score / num_of_games
     }
     return JsonResponse(response_data, safe=False)
 

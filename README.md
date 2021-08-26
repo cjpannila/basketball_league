@@ -19,3 +19,6 @@ sample: curl -X GET 'http://localhost:8000/games/' -v
 
 Champion Team: GET http://localhost:8000/winnerteam/
 sample: curl -X GET 'http://localhost:8000/winnerteam/' -v
+
+Get Player Details: GET http://localhost:8000/player/{player_id}/
+sample: curl -X GET 'http://localhost:8000/player/3595/' -v
