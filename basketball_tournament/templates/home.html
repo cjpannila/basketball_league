@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+    <h2>Games Played</h2>
+    <ul>
+        {% for game in games %}
+            <li>
+                <h3>{{ game.game_type }} | {{ game.team1.name }} vs {{ game.team2.name }} > {{ game.winner_team.name }}</h3>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

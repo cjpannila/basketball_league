@@ -11,4 +11,7 @@ Start application
 python3 manage.py runserver
 
 Available Services
-http://localhost:8000/
+
+Home page: http://localhost:8000/
+
+List all games: http://localhost:8000/games/
