@@ -21,7 +21,7 @@ class Game(models.Model):
     GAME_TYPES = [('FR', 'RoundOf16'), ('SR', 'RoundOf8'), ('SF', 'SemiFinal'), ('F', 'Final')]
     team1 = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='team1')
     team2 = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='team2')
-    winner_team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    winner_team = models.ForeignKey(Team, on_delete=models.CASCADE, null=True)
     played_on = models.DateTimeField()
     game_type = models.CharField(max_length=2, choices=GAME_TYPES)
 
