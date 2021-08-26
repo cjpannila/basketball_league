@@ -40,14 +40,18 @@ def get_winner_team(request):
 
 def get_player(request, player_id):
     player = Player.objects.get(id=player_id)
-    player_scores = PlayerScore.objects.filter(player__exact=player_id)
+    response_data = get_player_details(player)
+    return JsonResponse(response_data, safe=False)
+
+
+def get_player_details(player):
+    player_scores = PlayerScore.objects.filter(player__exact=player.id)
     num_of_games = 0
     sum_score = 0
     for player_score in player_scores:
         if player_score.score != 0:
             num_of_games += 1
             sum_score += player_score.score
-
     response_data = {
         'name': player.name,
         'team': player.team.name,
@@ -55,6 +59,14 @@ def get_player(request, player_id):
         'num_of_games': num_of_games,
         'average_score': sum_score / num_of_games
     }
-    return JsonResponse(response_data, safe=False)
+    return response_data
 
+
+def get_players_in_team(request, team_id):
+    players = Player.objects.filter(team_id__exact=team_id)
+    response_data = []
+    for player in players:
+        player_details = get_player_details(player)
+        response_data.append(player_details)
+    return JsonResponse(response_data, safe=False)
 
