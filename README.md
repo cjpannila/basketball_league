@@ -14,4 +14,8 @@ Available Services
 
 Home page: http://localhost:8000/
 
-List all games: http://localhost:8000/games/
+List all games: GET http://localhost:8000/games/
+sample: curl -X GET 'http://localhost:8000/games/' -v
+
+Champion Team: GET http://localhost:8000/winnerteam/
+sample: curl -X GET 'http://localhost:8000/winnerteam/' -v
