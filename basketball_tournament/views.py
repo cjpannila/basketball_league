@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .models import Game, TeamScore, Team, Player, PlayerScore
 from django.http import JsonResponse, HttpResponse
 import json
+import numpy as np
 
 
 def home(request):
@@ -52,12 +53,15 @@ def get_player_details(player):
         if player_score.score != 0:
             num_of_games += 1
             sum_score += player_score.score
+    avg_score = 0
+    if num_of_games > 0:
+        avg_score = sum_score / num_of_games
     response_data = {
         'name': player.name,
         'team': player.team.name,
         'height': player.height,
         'num_of_games': num_of_games,
-        'average_score': sum_score / num_of_games
+        'average_score': avg_score
     }
     return response_data
 
@@ -68,5 +72,24 @@ def get_players_in_team(request, team_id):
     for player in players:
         player_details = get_player_details(player)
         response_data.append(player_details)
+    return JsonResponse(response_data, safe=False)
+
+
+def get_players_in_avg_score_90th_percentile(request, team_id, percentile):
+    players = Player.objects.filter(team_id__exact=team_id)
+    avg_list = []
+    response_data = []
+    for player in players:
+        player_details = get_player_details(player)
+        avg_score = player_details['average_score']
+        avg_list.append(avg_score)
+    benchmark = np.percentile(avg_list, percentile)
+    print(f'percentile:{percentile} benchmark of team {Team.objects.get(id=team_id).name}: {benchmark}')
+    print(f'List of scores of team {avg_list}')
+    for player in players:
+        player_details = get_player_details(player)
+        avg_score = player_details['average_score']
+        if avg_score > benchmark:
+            response_data.append(player_details)
     return JsonResponse(response_data, safe=False)
 

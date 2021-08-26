@@ -15,13 +15,23 @@ Available Services
 Home page: http://localhost:8000/
 
 List all games: GET http://localhost:8000/games/
+
 sample: curl -X GET 'http://localhost:8000/games/' -v
 
 Champion Team: GET http://localhost:8000/winnerteam/
+
 sample: curl -X GET 'http://localhost:8000/winnerteam/' -v
 
 Get Player Details: GET http://localhost:8000/player/{player_id}/
+
 sample: curl -X GET 'http://localhost:8000/player/3595/' -v
 
 Get Players in team: GET http://localhost:8000/players/{team_id}/
+
 sample: curl -X GET 'http://localhost:8000/players/440/' -v
+
+Get Players in team with avg in 90th percentile: GET http://localhost:8000/highperformingplayers/{team_id}/{percentile}/
+
+sample 90th percentile: curl -X GET 'http://localhost:8000/highperformingplayers/440/90/' -v
+
+sample 50th percentile: curl -X GET 'http://localhost:8000/highperformingplayers/440/50/' -v
