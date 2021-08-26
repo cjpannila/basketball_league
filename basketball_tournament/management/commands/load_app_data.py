@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from basketball_tournament.models import Team, Coach, Player, Game, PlayerScore, TeamScore
-from datetime import datetime
+from django.contrib.auth.models import User
 from django.utils import timezone
 from faker import Faker
 
@@ -34,6 +34,7 @@ class Command(BaseCommand):
         Game.objects.all().delete()
         PlayerScore.objects.all().delete()
         TeamScore.objects.all().delete()
+        User.objects.filter(is_superuser__exact=0).delete()
 
     def addTeamsPlayersAndCoach(self):
         fake = Faker()
@@ -45,16 +46,29 @@ class Command(BaseCommand):
         for team in Team.objects.all():
             self.stdout.write(f'For team {team.name}, {team.id}')
             # add coach record
-            coach = Coach(name=f'coach_name_{team.name}', team_id=team.id)
+            coach_name = f'coach_name_{team.name}'
+            coach_user_id = self.addUser(user_name=coach_name)
+            coach = Coach(name=coach_name, team_id=team.id, user_id=coach_user_id)
             coach.save()
             self.stdout.write(f'Coach added : {coach.__str__()}')
             # add player records
             for p in range(10):
-                player = Player(name=f'player_name_{p + 1}_{team.name}',
+                player_name = f'player_name_{p + 1}_{team.name}'
+                player_user_id = self.addUser(user_name=player_name)
+                player = Player(name=player_name,
                                 height=fake.random_int(min=170, max=255, step=1),
-                                team_id=team.id)
+                                team_id=team.id, user_id=player_user_id)
                 player.save()
                 self.stdout.write(f'Player added : {player.__str__()}')
+
+    def addUser(self, user_name):
+        fake = Faker()
+        password = 'test_password'
+        user = User.objects.create_user(username=user_name, email=fake.safe_email(), password=password,
+                                        first_name=fake.first_name(), last_name=fake.last_name())
+        user.save()
+        return user.id
+
 
     def addGameRecords(self, game_round, round_team_names):
         fake = Faker()

@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth import get_user_model
 
 
 class Team(models.Model):
@@ -9,6 +10,7 @@ class Team(models.Model):
 
 
 class Player(models.Model):
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     height = models.IntegerField(null=True)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
@@ -30,6 +32,7 @@ class Game(models.Model):
 
 
 class Coach(models.Model):
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     team = models.OneToOneField('Team', on_delete=models.CASCADE)
 
